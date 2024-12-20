@@ -15,7 +15,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "web") // Убедитесь, что указываете правильный пакет для поиска компонентов
+@ComponentScan(basePackages = "web")
 
 public class AppConfig {
 
