@@ -1,7 +1,8 @@
 package Abiluri.PP_3_1_1.service;
 
-import Abiluri.PP_3_1_1.dao.UserDao;
+//import Abiluri.PP_3_1_1.dao.UserDao;
 import Abiluri.PP_3_1_1.model.User;
+import Abiluri.PP_3_1_1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,40 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    @Transactional
-    @Override
-    public void insertUser(String name, String email, String password) {
-        userDao.insertUser(name, email, password);
+    public void insertUser(User user) {
+        userRepository.save(user);
     }
 
-    @Transactional
-    @Override
-    public void updateUser(Long id, String name, String email, String password) {
-        userDao.updateUser(id, name, email, password);
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
-    @Transactional
-    @Override
-    public void deleteUser(String email) {
-        userDao.deleteUser(email);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return userDao.getUsers();
+        return userRepository.findAll();
     }
 
-    @Override
-    public User getUserByID(Long id) {
-        return userDao.getUserByID(id);
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        return userRepository.findById(id).get();
     }
 }

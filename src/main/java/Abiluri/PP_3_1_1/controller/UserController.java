@@ -15,37 +15,43 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
-    private UserServiceImpl userServiceImpl;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
+    public UserController(UserServiceImpl userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public String getUsers(ModelMap model) {
-        List<User> users = userServiceImpl.getAllUsers();
+    public String index(ModelMap model) {
+        List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "users";
     }
 
     @PostMapping
-    public String createUser(@RequestParam String name, @RequestParam String email, @RequestParam String password) {
-        userServiceImpl.insertUser(name, email, password);
+    public String create(User user) {
+        userService.insertUser(user);
         return "redirect:/users";
     }
 
+    @GetMapping("/edit")
+    public String edit(@RequestParam Long id, ModelMap model) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "editUser";
+    }
+
     @PostMapping("/update")
-    public String updateUser(@RequestParam Long id, @RequestParam String name, @RequestParam String email,
-                             @RequestParam String password) {
-        userServiceImpl.updateUser(id, name, email, password);
+    public String updateUser(@RequestParam Long id, User user) {
+        user.setId(id);
+        userService.insertUser(user);
         return "redirect:/users";
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@RequestParam String email) {
-        userServiceImpl.deleteUser(email);
+    public String delete(@RequestParam Long id, ModelMap model) {
+        userService.deleteUser(id);
         return "redirect:/users";
     }
 }
